@@ -1,0 +1,13 @@
+name = "openrevenue"
+main = "packages/worker/src/index.ts"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Set BASIC_AUTH_PASSWORD in the deploy flow to enable dashboard/admin protection.
+BASIC_AUTH_PASSWORD = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "openrevenue"
+database_id = ""

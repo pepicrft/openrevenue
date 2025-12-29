@@ -1,0 +1,13 @@
+{
+  "name": "openrevenue-marketing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "lint": "echo 'no lint configured'"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1"
+  }
+}

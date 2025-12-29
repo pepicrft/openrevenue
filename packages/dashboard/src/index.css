@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #0b0f14;
+  background-color: #f6f4ef;
+  font-family: "Public Sans", sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0b0f14;
+}
+
+#root {
+  min-height: 100vh;
+}

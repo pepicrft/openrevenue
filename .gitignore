@@ -1,0 +1,10 @@
+node_modules
+.dist
+.env
+.env.*
+.DS_Store
+dist
+.vite
+.wrangler
+wrangler.toml.tmp
+_site

@@ -1,0 +1,278 @@
+---
+pagination:
+  data: i18n.locales
+  size: 1
+  alias: locale
+permalink: "{% if locale.code == 'en' %}/index.html{% else %}/{{ locale.code }}/index.html{% endif %}"
+---
+{% if locale.code == 'en' %}
+  {% set localePath = '/' %}
+{% else %}
+  {% set localePath = '/' ~ locale.code ~ '/' %}
+{% endif %}
+<!doctype html>
+<html lang="{{ locale.lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ locale.strings.title }}</title>
+    <meta name="description" content="{{ locale.strings.description }}" />
+    <meta name="keywords" content="{{ locale.strings.keywords }}" />
+    <meta name="author" content="OpenRevenue" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="{{ site.baseUrl }}{{ localePath }}" />
+    {% for item in i18n.locales %}
+      {% if item.code == 'en' %}
+        {% set itemPath = '/' %}
+      {% else %}
+        {% set itemPath = '/' ~ item.code ~ '/' %}
+      {% endif %}
+      <link rel="alternate" hreflang="{{ item.lang }}" href="{{ site.baseUrl }}{{ itemPath }}" />
+    {% endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ site.baseUrl }}/" />
+    <meta property="og:title" content="{{ locale.strings.title }}" />
+    <meta property="og:description" content="{{ locale.strings.description }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ site.baseUrl }}{{ localePath }}" />
+    <meta property="og:image" content="{{ site.baseUrl }}/og.png" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="{{ locale.lang }}" />
+    {% for item in i18n.locales %}
+      {% if item.lang != locale.lang %}
+        <meta property="og:locale:alternate" content="{{ item.lang }}" />
+      {% endif %}
+    {% endfor %}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ locale.strings.title }}" />
+    <meta name="twitter:description" content="{{ locale.strings.description }}" />
+    <meta name="twitter:image" content="{{ site.baseUrl }}/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ site.basePath }}/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{{ locale.strings.skipToContent }}</a>
+    <div class="page">
+      <header class="nav">
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img" focusable="false">
+              <path
+                d="M3 7.5C3 6.12 4.12 5 5.5 5h13C19.88 5 21 6.12 21 7.5v9c0 1.38-1.12 2.5-2.5 2.5h-13C4.12 19 3 17.88 3 16.5v-9zm2.5-.5a.5.5 0 0 0-.5.5v9c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13zm6.5 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM7 8.5a1 1 0 0 0-1 1V10h2V9.5a1 1 0 0 0-1-1zm10 0a1 1 0 0 0-1 1V10h2V9.5a1 1 0 0 0-1-1zm0 5a1 1 0 0 0-1 1v.5h2v-.5a1 1 0 0 0-1-1zm-10 0a1 1 0 0 0-1 1v.5h2v-.5a1 1 0 0 0-1-1z"
+              />
+            </svg>
+          </span>
+          OpenRevenue
+        </div>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#deploy">{{ locale.strings.navDeploy }}</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="lang-select">
+            <label class="lang-label" for="lang-select">{{ locale.strings.languageLabel }}</label>
+            <select id="lang-select" onchange="window.location.href=this.value">
+              {% for item in i18n.locales %}
+                {% if item.code == 'en' %}
+                  {% set itemPath = '/' %}
+                {% else %}
+                  {% set itemPath = '/' ~ item.code ~ '/' %}
+                {% endif %}
+                <option value="{{ itemPath }}" {% if item.code == locale.code %}selected{% endif %}>
+                  {{ item.label }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <a class="cta cta-light cta-icon" href="https://github.com/pepicrft/openrevenue" aria-label="GitHub">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" focusable="false">
+                <path
+                  d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.2-1.11-1.52-1.11-1.52-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.05 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.32.1-2.74 0 0 .84-.28 2.75 1.05.8-.23 1.65-.34 2.5-.34.85 0 1.7.12 2.5.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.48.1 2.74.64.72 1.03 1.63 1.03 2.75 0 3.92-2.35 4.79-4.58 5.04.36.32.69.94.69 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.1 10.1 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"
+                />
+              </svg>
+            </span>
+            {{ locale.strings.navGithub }}
+          </a>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="hero">
+          <div class="hero-panel">
+            <p class="eyebrow">{{ locale.strings.eyebrow }}</p>
+            <h1>{{ locale.strings.heroTitle }}</h1>
+            <p class="lead">{{ locale.strings.heroLead }}</p>
+            <p class="subnote">{{ locale.strings.heroSubnote }}</p>
+            <div class="hero-actions">
+              <a class="cta cta-dark" href="#deploy">{{ locale.strings.ctaDeploy }}</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel cream-panel" aria-labelledby="stack-title">
+          <div>
+            <h2 id="stack-title">{{ locale.strings.stackTitle }}</h2>
+            <p>{{ locale.strings.stackBody }}</p>
+          </div>
+          <div class="pill-row">
+            <a class="pill" href="https://hono.dev/">{{ locale.strings.pillHono }}</a>
+            <a class="pill" href="https://developers.cloudflare.com/d1/">
+              {{ locale.strings.pillD1 }}
+            </a>
+            <a class="pill" href="https://developers.cloudflare.com/workers/">
+              {{ locale.strings.pillSdk }}
+            </a>
+          </div>
+          <div class="hero-metric">
+            <div>
+              <p>{{ locale.strings.metricScaleLabel }}</p>
+              <strong>{{ locale.strings.metricScaleValue }}</strong>
+            </div>
+            <div>
+              <p>{{ locale.strings.metricCostLabel }}</p>
+              <strong>{{ locale.strings.metricCostValue }}</strong>
+            </div>
+            <div>
+              <p>{{ locale.strings.metricAgencyLabel }}</p>
+              <strong>{{ locale.strings.metricAgencyValue }}</strong>
+            </div>
+          </div>
+          <div class="panel-divider">
+            <p>{{ locale.strings.region }}</p>
+          </div>
+        </section>
+
+        <section id="platform" class="cards" aria-labelledby="platform-title">
+          <div class="card accent">
+            <h2 id="platform-title">{{ locale.strings.platformTitle }}</h2>
+            <p>{{ locale.strings.platformBody }}</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" focusable="false">
+                <path
+                  d="M4 6a2 2 0 0 1 2-2h7.2c.5 0 1 .2 1.4.6l3.8 3.8c.4.4.6.9.6 1.4V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm2 0v12h12V10h-4a1 1 0 0 1-1-1V6H6zm9 0v2h2l-2-2zm-6.5 7h7a1 1 0 1 1 0 2h-7a1 1 0 1 1 0-2z"
+                />
+              </svg>
+            </div>
+            <h3>{{ locale.strings.receiptsTitle }}</h3>
+            <p>{{ locale.strings.receiptsBody }}</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" focusable="false">
+                <path
+                  d="M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm-7 16a7 7 0 0 1 14 0H5z"
+                />
+              </svg>
+            </div>
+            <h3>{{ locale.strings.customersTitle }}</h3>
+            <p>{{ locale.strings.customersBody }}</p>
+          </div>
+          <div class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" focusable="false">
+                <path
+                  d="M7 4h10a2 2 0 0 1 2 2v6.5a2 2 0 0 1-2 2h-2.6l-2.4 2.4a1 1 0 0 1-1.7-.7V14H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+                />
+              </svg>
+            </div>
+            <h3>{{ locale.strings.webhooksTitle }}</h3>
+            <p>{{ locale.strings.webhooksBody }}</p>
+          </div>
+        </section>
+
+        <section class="split" aria-labelledby="workflows-title">
+          <div>
+            <h2 id="workflows-title">{{ locale.strings.workflowsTitle }}</h2>
+            <p>{{ locale.strings.workflowsBody }}</p>
+          </div>
+          <div class="grid-mini">
+            <div class="mini-card">
+              <div class="mini-card-header">
+                <div class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img" focusable="false">
+                    <path
+                      d="M5 6.5A1.5 1.5 0 0 1 6.5 5h11A1.5 1.5 0 0 1 19 6.5V17a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6.5zm2 .5v10h10V7H7zm4.5 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm0 1.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+                    />
+                  </svg>
+                </div>
+                <span>{{ locale.strings.storeValidationTitle }}</span>
+              </div>
+              <p>{{ locale.strings.storeValidationBody }}</p>
+            </div>
+            <div class="mini-card">
+              <div class="mini-card-header">
+                <div class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img" focusable="false">
+                    <path
+                      d="M12 3a5 5 0 0 1 5 5c0 1.7-.85 3.2-2.15 4.1L12 15l-2.85-2.9A4.98 4.98 0 0 1 7 8a5 5 0 0 1 5-5zm-6 16h12a1 1 0 0 1 0 2H6a1 1 0 0 1 0-2z"
+                    />
+                  </svg>
+                </div>
+                <span>{{ locale.strings.entitlementsTitle }}</span>
+              </div>
+              <p>{{ locale.strings.entitlementsBody }}</p>
+            </div>
+            <div class="mini-card">
+              <div class="mini-card-header">
+                <div class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img" focusable="false">
+                    <path
+                      d="M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm-7 16a7 7 0 0 1 14 0H5z"
+                    />
+                  </svg>
+                </div>
+                <span>{{ locale.strings.identityTitle }}</span>
+              </div>
+              <p>{{ locale.strings.identityBody }}</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="deploy" class="deploy" aria-labelledby="deploy-title">
+          <div>
+            <h2 id="deploy-title">{{ locale.strings.deployTitle }}</h2>
+            <p>{{ locale.strings.deployBody }}</p>
+          </div>
+          <div class="deploy-box">
+            <div class="deploy-row">
+              <span>{{ locale.strings.deployRow1 }}</span>
+              <a
+                class="cta cta-dark"
+                href="https://deploy.workers.cloudflare.com/?url=https://github.com/pepicrft/openrevenue"
+              >
+                {{ locale.strings.deployCta }}
+              </a>
+            </div>
+            <div class="deploy-row">
+              <span>{{ locale.strings.deployRow2 }}</span>
+              <code>wrangler d1 execute ...</code>
+            </div>
+            <div class="deploy-row">
+              <span>{{ locale.strings.deployRow3 }}</span>
+              <code>https://your-worker.workers.dev</code>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div>
+          <p>{{ locale.strings.footerLine1 }}</p>
+          <p class="muted">{{ locale.strings.footerLine2 }}</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/pepicrft/openrevenue">{{ locale.strings.navGithub }}</a>
+          <a href="#deploy">{{ locale.strings.footerLinkDeploy }}</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
