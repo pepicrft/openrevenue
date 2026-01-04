@@ -8,3 +8,15 @@ dist
 .wrangler
 wrangler.toml.tmp
 _site
+
+# iOS Example
+examples/ios/.build
+examples/ios/.swiftpm
+examples/ios/OpenRevenueExample.xcodeproj/project.xcworkspace
+examples/ios/OpenRevenueExample.xcodeproj/xcuserdata
+
+# Android Example
+examples/android/.gradle
+examples/android/app/build
+examples/android/build
+examples/android/local.properties
