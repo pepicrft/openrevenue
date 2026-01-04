@@ -21,7 +21,7 @@ import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import com.revenuecat.purchases.getCustomerInfoWith
 import com.revenuecat.purchases.getOfferingsWith
-import java.net.URI
+import java.net.URL
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         // Point to local OpenRevenue instance for testing
         // 10.0.2.2 is the host machine's localhost from Android emulator
         // Change to your local IP when testing on a real device
-        Purchases.proxyURL = URI.create("http://10.0.2.2:8787")
+        Purchases.proxyURL = URL("http://10.0.2.2:8787")
         
         // Enable debug logs
         Purchases.logLevel = LogLevel.DEBUG
