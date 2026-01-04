@@ -7,14 +7,20 @@
     "dev": "wrangler dev --local --persist",
     "deploy": "wrangler deploy",
     "lint": "echo 'no lint configured'",
-    "test": "vitest"
+    "test": "vitest",
+    "db:migrate": "wrangler d1 migrations apply openrevenue --local",
+    "db:seed": "wrangler d1 execute openrevenue --local --file=scripts/seed.sql",
+    "db:reset": "pnpm db:migrate && pnpm db:seed"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.1",
     "hono": "^4.5.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240725.0",
+    "@types/node": "^25.0.3",
+    "drizzle-kit": "^0.31.8",
     "typescript": "^5.5.4",
     "vitest": "^2.0.5",
     "wrangler": "^3.69.1"

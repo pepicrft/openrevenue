@@ -2,6 +2,7 @@ import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
 import { Card } from "./components/ui/card";
 import { MetricCard } from "./components/metric-card";
+import { useAuth } from "./hooks/useAuth";
 
 const metrics = [
   {
@@ -40,6 +41,8 @@ const activity = [
 ];
 
 export default function App() {
+  const { user, logout } = useAuth();
+  
   return (
     <div className="min-h-screen bg-hero-radial text-white">
       <div className="min-h-screen bg-mesh">
@@ -58,8 +61,8 @@ export default function App() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Button>Deploy Worker</Button>
-              <Button variant="ghost">Open API docs</Button>
+              <span className="text-sm text-white/60">{user?.email}</span>
+              <Button onClick={logout} variant="ghost">Sign out</Button>
             </div>
           </header>
 
