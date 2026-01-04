@@ -1,10 +1,20 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { z } from "zod";
 import { parseApiKey, parseBasicAuth } from "./lib/auth";
+import {
+  requestEmailVerification,
+  verifyEmailToken,
+  validateSession,
+  logout,
+  getPendingVerifications,
+} from "./lib/email-auth";
 
 interface Env {
   DB: D1Database;
   BASIC_AUTH_PASSWORD: string;
+  RESEND_API_KEY?: string;
+  APP_URL?: string;
 }
 
 type Variables = {
@@ -16,8 +26,114 @@ type Variables = {
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
+// Enable CORS for dashboard
+app.use("/auth/*", cors({
+  origin: ["http://localhost:5173", "http://localhost:4173"],
+  credentials: true,
+}));
+
 app.get("/v1/health", (c) => {
   return c.json({ status: "ok" });
+});
+
+// ============================================
+// Auth endpoints for dashboard
+// ============================================
+
+const loginSchema = z.object({
+  email: z.string().email(),
+});
+
+const verifySchema = z.object({
+  token: z.string().min(1),
+});
+
+// Request email verification (login/signup)
+app.post("/auth/login", async (c) => {
+  const body = loginSchema.safeParse(await c.req.json().catch(() => null));
+  if (!body.success) {
+    return c.json({ error: "invalid_email", details: body.error.flatten() }, 400);
+  }
+
+  const result = await requestEmailVerification(c.env, body.data.email);
+
+  if (!result.success) {
+    return c.json({ error: result.error }, 500);
+  }
+
+  // In development (no RESEND_API_KEY), return the token for easy testing
+  return c.json({
+    message: "Verification email sent",
+    // Only include token in dev mode for local testing
+    ...(result.token && { token: result.token }),
+  });
+});
+
+// Verify email token and create session
+app.post("/auth/verify", async (c) => {
+  const body = verifySchema.safeParse(await c.req.json().catch(() => null));
+  if (!body.success) {
+    return c.json({ error: "invalid_token", details: body.error.flatten() }, 400);
+  }
+
+  const result = await verifyEmailToken(c.env, body.data.token);
+
+  if (!result.success) {
+    return c.json({ error: result.error }, 401);
+  }
+
+  return c.json({
+    message: "Email verified",
+    sessionToken: result.sessionToken,
+  });
+});
+
+// Get current user (validate session)
+app.get("/auth/me", async (c) => {
+  const authHeader = c.req.header("Authorization");
+  const sessionToken = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : null;
+
+  if (!sessionToken) {
+    return c.json({ error: "missing_token" }, 401);
+  }
+
+  const result = await validateSession(c.env, sessionToken);
+
+  if (!result.valid) {
+    return c.json({ error: "invalid_session" }, 401);
+  }
+
+  return c.json({
+    userId: result.userId,
+    email: result.email,
+  });
+});
+
+// Logout
+app.post("/auth/logout", async (c) => {
+  const authHeader = c.req.header("Authorization");
+  const sessionToken = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : null;
+
+  if (sessionToken) {
+    await logout(c.env, sessionToken);
+  }
+
+  return c.json({ message: "Logged out" });
+});
+
+// Dev endpoint: list pending verifications (for local testing without email)
+app.get("/auth/dev/pending", async (c) => {
+  // Only allow in development
+  if (c.env.RESEND_API_KEY) {
+    return c.json({ error: "not_available_in_production" }, 403);
+  }
+
+  const pending = await getPendingVerifications(c.env);
+  return c.json({ pending });
 });
 
 app.use("/admin/*", async (c, next) => {

@@ -6,6 +6,10 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 # Set BASIC_AUTH_PASSWORD in the deploy flow to enable dashboard/admin protection.
 BASIC_AUTH_PASSWORD = ""
+# Set RESEND_API_KEY to enable email sending (leave empty for local dev with manual verification)
+# RESEND_API_KEY = ""
+# Dashboard URL for email links
+APP_URL = "http://localhost:5173"
 
 [[d1_databases]]
 binding = "DB"
