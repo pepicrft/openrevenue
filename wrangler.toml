@@ -6,10 +6,15 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 # Set BASIC_AUTH_PASSWORD in the deploy flow to enable dashboard/admin protection.
 BASIC_AUTH_PASSWORD = ""
-# Set RESEND_API_KEY to enable email sending (leave empty for local dev with manual verification)
-# RESEND_API_KEY = ""
 # Dashboard URL for email links
 APP_URL = "http://localhost:5173"
+# Email sender address (must be from a domain with Email Routing enabled)
+# EMAIL_FROM = "noreply@yourdomain.com"
+
+# Uncomment to enable Cloudflare Email Workers for sending verification emails
+# Requires Email Routing to be enabled on the domain
+# [send_email]
+# name = "EMAIL"
 
 [[d1_databases]]
 binding = "DB"

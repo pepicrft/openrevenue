@@ -10,11 +10,14 @@ import {
   getPendingVerifications,
 } from "./lib/email-auth";
 
+import type { SendEmail } from "./lib/email-auth";
+
 interface Env {
   DB: D1Database;
   BASIC_AUTH_PASSWORD: string;
-  RESEND_API_KEY?: string;
+  EMAIL?: SendEmail;
   APP_URL?: string;
+  EMAIL_FROM?: string;
 }
 
 type Variables = {
@@ -127,8 +130,8 @@ app.post("/auth/logout", async (c) => {
 
 // Dev endpoint: list pending verifications (for local testing without email)
 app.get("/auth/dev/pending", async (c) => {
-  // Only allow in development
-  if (c.env.RESEND_API_KEY) {
+  // Only allow when no email service is configured (local dev)
+  if (c.env.EMAIL) {
     return c.json({ error: "not_available_in_production" }, 403);
   }
 

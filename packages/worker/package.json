@@ -7,7 +7,10 @@
     "dev": "wrangler dev --local --persist",
     "deploy": "wrangler deploy",
     "lint": "echo 'no lint configured'",
-    "test": "vitest"
+    "test": "vitest",
+    "db:migrate": "wrangler d1 migrations apply openrevenue --local",
+    "db:seed": "wrangler d1 execute openrevenue --local --file=scripts/seed.sql",
+    "db:reset": "pnpm db:migrate && pnpm db:seed"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.1",

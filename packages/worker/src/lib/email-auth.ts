@@ -2,10 +2,21 @@ import { drizzle } from "drizzle-orm/d1";
 import { eq, and, gt } from "drizzle-orm";
 import * as schema from "../db/schema";
 
+// Cloudflare Email Workers binding type
+export interface SendEmail {
+  send(message: EmailMessage): Promise<void>;
+}
+
+// EmailMessage class for Cloudflare Email Workers
+declare class EmailMessage {
+  constructor(from: string, to: string, raw: ReadableStream | string);
+}
+
 export interface AuthEnv {
   DB: D1Database;
-  RESEND_API_KEY?: string;
+  EMAIL?: SendEmail;
   APP_URL?: string;
+  EMAIL_FROM?: string;
 }
 
 function generateToken(): string {
@@ -18,6 +29,25 @@ function generateToken(): string {
 
 function generateId(): string {
   return crypto.randomUUID();
+}
+
+function createEmailContent(to: string, subject: string, html: string): string {
+  // Create a simple email in RFC 5322 format
+  const boundary = `----=_Part_${Date.now()}`;
+  return [
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    ``,
+    `--${boundary}`,
+    `Content-Type: text/html; charset=utf-8`,
+    `Content-Transfer-Encoding: 7bit`,
+    ``,
+    html,
+    ``,
+    `--${boundary}--`,
+  ].join("\r\n");
 }
 
 export async function requestEmailVerification(
@@ -64,37 +94,32 @@ export async function requestEmailVerification(
     createdAt: now,
   });
 
-  // Send email if Resend API key is configured
-  if (env.RESEND_API_KEY) {
+  // Send email if Cloudflare Email binding is configured
+  if (env.EMAIL) {
     const appUrl = env.APP_URL || "http://localhost:5173";
     const verifyUrl = `${appUrl}/auth/verify?token=${token}`;
+    const from = env.EMAIL_FROM || "noreply@openrevenue.dev";
 
     try {
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "OpenRevenue <noreply@openrevenue.dev>",
-          to: normalizedEmail,
-          subject: "Sign in to OpenRevenue",
-          html: `
-            <h1>Sign in to OpenRevenue</h1>
-            <p>Click the link below to sign in to your OpenRevenue dashboard:</p>
-            <p><a href="${verifyUrl}">Sign in to OpenRevenue</a></p>
-            <p>This link expires in 15 minutes.</p>
-            <p>If you didn't request this email, you can safely ignore it.</p>
-          `,
-        }),
-      });
+      const html = `
+        <h1>Sign in to OpenRevenue</h1>
+        <p>Click the link below to sign in to your OpenRevenue dashboard:</p>
+        <p><a href="${verifyUrl}">Sign in to OpenRevenue</a></p>
+        <p>This link expires in 15 minutes.</p>
+        <p>If you didn't request this email, you can safely ignore it.</p>
+      `;
 
-      if (!response.ok) {
-        console.error("Failed to send email:", await response.text());
-      }
+      const rawEmail = createEmailContent(
+        normalizedEmail,
+        "Sign in to OpenRevenue",
+        html
+      );
+
+      const message = new EmailMessage(from, normalizedEmail, rawEmail);
+      await env.EMAIL.send(message);
     } catch (error) {
       console.error("Error sending email:", error);
+      // Don't fail the request if email fails - user can still use dev mode
     }
   }
 
@@ -102,7 +127,7 @@ export async function requestEmailVerification(
   return {
     success: true,
     // Only include token in response if no email service configured (for local dev)
-    token: env.RESEND_API_KEY ? undefined : token,
+    token: env.EMAIL ? undefined : token,
   };
 }
 
