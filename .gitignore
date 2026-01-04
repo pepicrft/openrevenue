@@ -12,6 +12,8 @@ _site
 # iOS Example
 examples/ios/.build
 examples/ios/.swiftpm
+examples/ios/OpenRevenueExample.xcodeproj/project.xcworkspace
+examples/ios/OpenRevenueExample.xcodeproj/xcuserdata
 
 # Android Example
 examples/android/.gradle
