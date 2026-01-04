@@ -18,6 +18,7 @@
 		004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		009 /* OpenRevenueExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenRevenueExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		025 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +47,7 @@
 				002 /* OpenRevenueExampleApp.swift */,
 				004 /* ContentView.swift */,
 				006 /* Assets.xcassets */,
+				025 /* Products.storekit */,
 			);
 			path = OpenRevenueExample;
 			sourceTree = "<group>";
