@@ -27,13 +27,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Point to local OpenRevenue instance for testing
-        // 10.0.2.2 is the host machine's localhost from Android emulator
-        // Change to your local IP when testing on a real device
-        Purchases.proxyURL = URL("http://10.0.2.2:8787")
-        
-        // Enable debug logs
-        Purchases.logLevel = LogLevel.DEBUG
+        // Only set proxy URL and debug logs in debug builds
+        if (BuildConfig.DEBUG) {
+            // Point to local OpenRevenue instance for testing
+            // 10.0.2.2 is the host machine's localhost from Android emulator
+            // Change to your local IP when testing on a real device
+            Purchases.proxyURL = URL("http://10.0.2.2:8787")
+            
+            // Enable debug logs
+            Purchases.logLevel = LogLevel.DEBUG
+        }
         
         // Configure RevenueCat with your API key
         // The API key should match one in your OpenRevenue database
@@ -207,12 +210,14 @@ fun OpenRevenueExampleScreen() {
             Text("Fetch Data")
         }
         
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Pointing to: 10.0.2.2:8787",
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 12.sp
-        )
+        if (BuildConfig.DEBUG) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Pointing to: 10.0.2.2:8787",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 12.sp
+            )
+        }
     }
 }
 
