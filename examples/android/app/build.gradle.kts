@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "me.pepicrft.openrevenueexample"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "me.pepicrft.openrevenueexample"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
