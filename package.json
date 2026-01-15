@@ -3,12 +3,19 @@
   "private": true,
   "packageManager": "pnpm@9.12.0",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/worker/*"
   ],
   "scripts": {
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build",
+    "dev": "concurrently -n dashboard,worker -c magenta,cyan \"pnpm -C packages/worker/dashboard dev\" \"pnpm -C packages/worker dev\"",
+    "build": "pnpm -C packages/worker/dashboard build",
     "lint": "pnpm -r lint",
-    "deploy": "pnpm -C packages/worker deploy"
+    "deploy": "pnpm -C packages/worker deploy",
+    "db:migrate": "pnpm -C packages/worker exec wrangler -c ../../wrangler.toml d1 migrations apply DB --local",
+    "db:seed": "pnpm -C packages/worker exec wrangler -c ../../wrangler.toml d1 execute DB --local --file ./seed.sql"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "wrangler": "^3.69.1"
   }
 }

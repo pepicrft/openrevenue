@@ -8,19 +8,19 @@ Guidance for coding agents working in this repo.
 - Prefer TypeScript, Hono, and pnpm.
 - Default to Cloudflare-native services (D1 first, KV optional).
 - Preserve existing style and file layout.
+- Keep documentation in `docs/` and `README.md` up to date with changes.
 
 ## Project layout
 
 - `packages/worker`: Cloudflare Worker API (Hono + TypeScript)
-- `packages/dashboard`: React dashboard (Vite + Tailwind, shadcn-style components)
+- `packages/worker/dashboard`: React dashboard (Vite + Tailwind, shadcn-style components), built and served by the worker.
 
 ## Local commands
 
 ```bash
 mise install
 pnpm install
-pnpm -C packages/worker dev
-pnpm -C packages/dashboard dev
+pnpm dev
 ```
 
 ## Conventions
